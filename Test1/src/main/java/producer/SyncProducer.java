@@ -14,25 +14,25 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
  */
 public class SyncProducer {
     public static void main(String[] args) throws Exception {
-        //初始化消息生产者
-        DefaultMQProducer producer = new
-                DefaultMQProducer("please_rename_unique_group_name");
-        // 指定 name server 地址.
-        producer.setNamesrvAddr("localhost:9876");
-        //调用实例.
+        // 实例化消息生产者Producer
+        DefaultMQProducer producer = new DefaultMQProducer("please_rename_unique_group_name");
+        // 设置NameServer的地址
+        producer.setNamesrvAddr("8.140.123.11:9876");
+        producer.setVipChannelEnabled(false);
+        // 启动Producer实例
         producer.start();
         for (int i = 0; i < 100; i++) {
-            //创建消息实例, 指定 topic, tag 和 消息体 .
+            // 创建消息，并指定Topic，Tag和消息体
             Message msg = new Message("TopicTest" /* Topic */,
                     "TagA" /* Tag */,
-                    ("Hello RocketMQ " +
-                            i).getBytes(RemotingHelper.DEFAULT_CHARSET) /* Message body */
+                    ("Hello RocketMQ " + i).getBytes(RemotingHelper.DEFAULT_CHARSET) /* Message body */
             );
-            //发送消息给brokers
+            // 发送消息到一个Broker
             SendResult sendResult = producer.send(msg);
+            // 通过sendResult返回消息是否成功送达
             System.out.printf("%s%n", sendResult);
         }
-        //销毁生产者实例
+        // 如果不再发送消息，关闭Producer实例。
         producer.shutdown();
     }
 }
